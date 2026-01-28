@@ -1,0 +1,217 @@
+-- Enable UUID extension
+create extension if not exists "uuid-ossp";
+
+-- PLAYERS
+create table if not exists players (
+    id uuid primary key default uuid_generate_v4(),
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    name text unique not null,
+    nation text,
+    position text,
+    age text,
+    matches_played int,
+    starts int,
+    minutes_played int,
+    nineties float,
+    goals int,
+    assists int,
+    goals_plus_assists int,
+    non_penalty_goals int,
+    penalties_made int,
+    penalties_attempted int,
+    yellow_cards int,
+    red_cards int,
+    xg float,
+    npxg float,
+    xag float,
+    npxg_plus_xag float,
+    progressive_carries int,
+    progressive_passes int,
+    progressive_passes_received int,
+    goals_per_90 float,
+    assists_per_90 float,
+    g_plus_a_per_90 float,
+    g_minus_pk_per_90 float,
+    xg_per_90 float,
+    xag_per_90 float,
+    xg_plus_xag_per_90 float,
+    npxg_per_90 float,
+    npxg_plus_xag_per_90 float,
+    team text
+);
+
+-- SHOOTING
+create table if not exists stats_shooting (
+    id uuid primary key default uuid_generate_v4(),
+    player_id uuid references players(id) not null,
+    goals int,
+    shots int,
+    shots_on_target int,
+    sot_percent float,
+    shots_per_90 float,
+    sot_per_90 float,
+    goals_per_shot float,
+    goals_per_sot float,
+    avg_dist float,
+    free_kicks int,
+    pk_made int,
+    pk_att int,
+    xg float,
+    npxg float,
+    npxg_per_shot float,
+    g_minus_xg float,
+    npg_minus_npxg float
+);
+
+-- PASSING
+create table if not exists stats_passing (
+    id uuid primary key default uuid_generate_v4(),
+    player_id uuid references players(id) not null,
+    completed int,
+    attempted int,
+    completion_pct float,
+    total_distance int,
+    progressive_distance int,
+    short_completed int,
+    short_attempted int,
+    short_pct float,
+    medium_completed int,
+    medium_attempted int,
+    medium_pct float,
+    long_completed int,
+    long_attempted int,
+    long_pct float,
+    assists int,
+    xag float,
+    expected_assists float,
+    a_minus_xag float,
+    key_passes int,
+    final_third int,
+    pen_area int,
+    cross_pen_area int,
+    progressive_passes int
+);
+
+-- PASSING TYPES
+create table if not exists stats_passing_types (
+    id uuid primary key default uuid_generate_v4(),
+    player_id uuid references players(id) not null,
+    attempted int,
+    live int,
+    dead int,
+    free_kicks int,
+    through_balls int,
+    switches int,
+    crosses int,
+    throw_ins int,
+    corners int,
+    in_corners int,
+    out_corners int,
+    straight_corners int,
+    completed int,
+    offsides int,
+    blocked int
+);
+
+-- GCA (Goal & Shot Creation)
+create table if not exists stats_gca (
+    id uuid primary key default uuid_generate_v4(),
+    player_id uuid references players(id) not null,
+    sca int,
+    sca_per_90 float,
+    sca_live int,
+    sca_dead int,
+    sca_takeon int,
+    sca_shot int,
+    sca_fouled int,
+    sca_defense int,
+    gca int,
+    gca_per_90 float,
+    gca_live int,
+    gca_dead int,
+    gca_takeon int,
+    gca_shot int,
+    gca_fouled int,
+    gca_defense int
+);
+
+-- DEFENSE
+create table if not exists stats_defense (
+    id uuid primary key default uuid_generate_v4(),
+    player_id uuid references players(id) not null,
+    tackles int,
+    tackles_won int,
+    tackles_def_3rd int,
+    tackles_mid_3rd int,
+    tackles_att_3rd int,
+    dribblers_tackled int,
+    dribbles_challenged int,
+    dribbles_tackled_pct float,
+    challenges_lost int,
+    blocks int,
+    blocked_shots int,
+    blocked_passes int,
+    interceptions int,
+    tackles_interceptions int,
+    clearances int,
+    errors int
+);
+
+-- POSSESSION
+create table if not exists stats_possession (
+    id uuid primary key default uuid_generate_v4(),
+    player_id uuid references players(id) not null,
+    touches int,
+    touches_def_pen int,
+    touches_def_3rd int,
+    touches_mid_3rd int,
+    touches_att_3rd int,
+    touches_att_pen int,
+    touches_live int,
+    takeons_attempted int,
+    takeons_won int,
+    takeons_won_pct float,
+    takeons_tackled int,
+    takeons_tackled_pct float,
+    carries int,
+    carries_dist int,
+    carries_prog_dist int,
+    progressive_carries int,
+    carries_final_third int,
+    carries_pen_area int,
+    miscontrols int,
+    dispossessed int,
+    passes_received int,
+    prog_passes_received int
+);
+
+-- GOALKEEPING
+create table if not exists stats_goalkeeping (
+    id uuid primary key default uuid_generate_v4(),
+    player_id uuid references players(id) not null,
+    goals_against int,
+    pk_allowed int,
+    free_kicks int,
+    corner_kicks int,
+    own_goals int,
+    psxg float,
+    psxg_per_sot float,
+    psxg_plus_minus float,
+    psxg_per_90 float,
+    launched_completed int,
+    launched_attempted int,
+    launched_pct float,
+    passes_attempted int,
+    throws_attempted int,
+    launch_pct float,
+    avg_length float,
+    goal_kicks_attempted int,
+    goal_kicks_pct float,
+    goal_kicks_avg_length float,
+    crosses_faced int,
+    crosses_stopped int,
+    crosses_stopped_pct float,
+    sweeper_actions int,
+    sweeper_per_90 float,
+    sweeper_avg_dist float
+);
